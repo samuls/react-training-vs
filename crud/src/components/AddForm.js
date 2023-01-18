@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Alert } from 'react-bootstrap';
 
-const AddForm = ( { getData, isEditUser, newUser, setUser } ) => {
+const AddForm = ( { getData, isEditUser, newUser, setUser,  setIsEditUser } ) => {
     
     let [ show, setShow ] = useState(false);
     const [error, setError] = useState(null);
@@ -18,14 +18,30 @@ const AddForm = ( { getData, isEditUser, newUser, setUser } ) => {
             if( addRes.statusText === "Created" ) {
                 setShow(true);
             }
-            setUser({first_name : '', last_name : '', email_id :'', password:'', id:'' });
-            getData();
+            handleClearForm();
         })
         .catch(error =>  setError(error));
     }
 
-    let  updateUserData = (id) => {
-        console.log(id);
+    let handleClearForm = () => {
+        setUser({first_name : '', last_name : '', email_id :'', password:'', id:'' });
+        getData();
+        setIsEditUser(false);
+    }
+
+    let  updateUserData = (e) => {
+        let id = e.target.getAttribute('data-userid');
+        axios.put('https://62b55842da3017eabb18d432.mockapi.io/api/v1/users/' + e.target.getAttribute('data-userid'), newUser)
+        .then(res => 
+            {
+                if( res.statusText === "OK" ) {
+                    getData();
+                }
+                handleClearForm();
+            }
+        )
+        .catch(error => setError(error));
+        handleClearForm();
     }
 
     return (
@@ -80,8 +96,12 @@ const AddForm = ( { getData, isEditUser, newUser, setUser } ) => {
                     onInput={addInputHandler}/>
                 </Form.Group>
 
-                <Button onClick={!isEditUser ? addNewUser : updateUserData(newUser.id)} variant="primary" size="sm" className='right'>
+                <Button onClick={!isEditUser ? addNewUser : updateUserData} data-userid={newUser.id} variant="primary" size="sm" className='right'>
                 {!isEditUser ? 'Save' : 'Update'}
+                </Button>
+                &nbsp;&nbsp;
+                <Button onClick={handleClearForm}  variant="danger" size="sm" className='right'>
+                    Clear
                 </Button>
             </Form>
         </>

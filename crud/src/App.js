@@ -27,11 +27,22 @@ const App = () => {
     }
 
     let editUserHandler = (e) => {
+        setIsEditUser(false);
         axios.get('https://62b55842da3017eabb18d432.mockapi.io/api/v1/users/' + e.target.getAttribute('data-userid'))
         .then(res => 
             {
                 setIsEditUser(true);
                 setUser(res.data)
+            }
+        )
+        .catch(error => setError(error));
+    }
+
+    let handleDeleteUser = (e) => {
+        axios.delete('https://62b55842da3017eabb18d432.mockapi.io/api/v1/users/' + e.target.getAttribute('data-userid'))
+        .then(res => 
+            {
+                getData();
             }
         )
         .catch(error => setError(error));
@@ -55,7 +66,7 @@ const App = () => {
             name : 'Action',
             cell: row => <div>
                 <Button data-userid={row.id} onClick={editUserHandler} variant='secondary' size='sm'>Edit</Button>
-                &nbsp;<Button variant='danger' size='sm'>Delete</Button>
+                &nbsp;<Button data-userid={row.id} variant='danger' size='sm' onClick={handleDeleteUser}>Delete</Button>
             </div>
         }
     ]
@@ -75,7 +86,7 @@ const App = () => {
                             pagination />
                     </Col>
                     <Col>
-                        <AddForm getData={getData} newUser={newUser} isEditUser={isEditUser} setUser={setUser} />
+                        <AddForm getData={getData}  newUser={newUser} isEditUser={isEditUser} setUser={setUser} setIsEditUser={setIsEditUser} />
                     </Col>
                 </Row>
             </>
