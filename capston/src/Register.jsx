@@ -10,12 +10,12 @@ const Register = () => {
   };
   const [message, setMessage] = useState(null);
   const [errorMessageClass, setErrorMessageClass] = useState();
-  const [formValues, setFormValues] = useState(fields);
+  const [formData, setFormDataValues] = useState(fields);
 
   const [formErrors, setFormErrors] = useState(fields);
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setFormValues({ ...formValues, [name]: value });
+    setFormDataValues({ ...formData, [name]: value });
   };
 
   const validate = (values) => {
@@ -32,24 +32,23 @@ const Register = () => {
     if (!values.accountType) {
       errors.accountType = "Account type is required";
     }
-    
+
     return errors;
   };
 
   let handleRegister = (e) => {
     e.preventDefault();
 
-    setFormErrors(validate(formValues));
+    setFormErrors(validate(formData));
     if (Object.keys(formErrors).length > 0) {
       return false;
     }
 
     axios
-      .post("http://localhost/registerUser.php", formValues)
+      .post("http://localhost/registerUser.php", formData)
       .then((addRes) => {
         setErrorMessageClass('alert alert-success')
         setMessage(addRes.data.message);
-
       })
       .catch((error) => {
         setErrorMessageClass('alert alert-danger')
@@ -81,7 +80,7 @@ const Register = () => {
                         <input
                           type="text"
                           onChange={handleChange}
-                          value={formValues.fname}
+                          value={formData.fname}
                           name="fname"
                           id="firstName"
                           className="htmlForm-control form-control htmlForm-control-lg"
@@ -100,7 +99,7 @@ const Register = () => {
                         <input
                           type="text"
                           onChange={handleChange}
-                          value={formValues.lname}
+                          value={formData.lname}
                           name="lname"
                           id="lastName"
                           className="htmlForm-control  form-control htmlForm-control-lg"
@@ -122,7 +121,7 @@ const Register = () => {
                           type="text"
                           id="address"
                           onChange={handleChange}
-                          value={formValues.address}
+                          value={formData.address}
                           name="address"
                           className="htmlForm-control form-control htmlForm-control-lg"
                         />
@@ -173,13 +172,13 @@ const Register = () => {
                       className="btn btn-primary btn-lg"
                       type="submit"
                       value="Submit"
-                    />
+                    />5
                   </div>
                 </form>
               </div>
             </div>
           </div>
-        </div>
+        </div>                                                                            
       </div>
     </section>
   );
